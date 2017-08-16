@@ -11,6 +11,7 @@ public class PetContract {
     private PetContract() {
     }
 
+    // set the db schema here
     public static final class PetEntry implements BaseColumns {
         public final static String TABLE_NAME = "pets";
         public final static String _ID = BaseColumns._ID;
