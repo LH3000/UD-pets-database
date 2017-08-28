@@ -72,9 +72,6 @@ public class CatalogActivity extends AppCompatActivity {
      */
     private void displayDatabaseInfo() {
 
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
         // setup the projection(of columns) from the db to be included in the cursor
         String[] projection = {
                 PetContract.PetEntry._ID,
@@ -84,8 +81,11 @@ public class CatalogActivity extends AppCompatActivity {
                 PetContract.PetEntry.COLUMN_PET_WEIGHT,
         };
 
-        // using the .query instead of .rawQuery() to query the entire db
-        Cursor cursor = db.query(PetContract.PetEntry.TABLE_NAME, projection, null, null, null, null, null);
+        // using the .query instead of .rawQuery() to query the entire db (BAD PRACTICE, should contact
+        // the provider instead)
+        // Cursor cursor = db.query(PetContract.PetEntry.TABLE_NAME, projection, null, null, null, null, null);
+
+        Cursor cursor = getContentResolver().query(PetContract.PetEntry.CONTENT_URI, projection, null, null, null);
 
         try {
             TextView displayView = (TextView) findViewById(R.id.text_view_pet);
