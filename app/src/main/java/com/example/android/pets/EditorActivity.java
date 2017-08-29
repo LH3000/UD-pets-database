@@ -116,7 +116,8 @@ public class EditorActivity extends AppCompatActivity {
         // trim will trim off any leading and trailing white space
         String nameString = mNameEditText.getText().toString().trim();
         String breedString = mBreedEditText.getText().toString().trim();
-        int weightInt = Integer.parseInt(mWeightEditText.getText().toString().trim());
+        String weightString = mWeightEditText.getText().toString().trim();
+        int weight = Integer.parseInt(weightString);
 
         // create a ContentValue object where column names are the keys,
         // and pet attributes from the editor are the values
@@ -124,7 +125,7 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_NAME, nameString);
         values.put(PetEntry.COLUMN_PET_BREED, breedString);
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
-        values.put(PetEntry.COLUMN_PET_WEIGHT, weightInt);
+        values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
 
         // insert a new pet into the provider, returning the content URI for the new pet
         Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
