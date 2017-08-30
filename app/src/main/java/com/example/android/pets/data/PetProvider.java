@@ -156,7 +156,70 @@ public class PetProvider extends ContentProvider {
      */
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        return 0;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            case PET_ID:
+                // for the pet_id code, extract out the ID from the URI
+                // so we know which row to update. Selection will be "_id=?" and
+                // selection arguments will be a String array containing the actual ID.
+                selection = PetContract.PetEntry._ID + "=?";
+                selectionArgs = new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return updatePet(uri, contentValues, selection, selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for " + uri);
+        }
+    }
+
+    /**
+     * Update pets in the db with the given content values. Apply the change specified in the
+     * selection and selection arguments (which could be 0 or 1 or more pets)
+     * return the number of rows that were successfully updated
+     *
+     * @param uri
+     * @param values
+     * @param selection
+     * @param selectionArgs
+     * @return
+     */
+    private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
+        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
+        // check that the name value is not null.
+        if (values.containsKey(PetContract.PetEntry.COLUMN_PET_NAME)) {
+            String name = values.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
+            if (name == null) {
+                throw new IllegalArgumentException("Pet requires a name");
+            }
+        }
+
+        // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
+        // check that the gender value is valid.
+        if (values.containsKey(PetContract.PetEntry.COLUMN_PET_GENDER)) {
+            Integer gender = values.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
+            if (gender == null || !PetContract.PetEntry.isValidGender(gender)) {
+                throw new IllegalArgumentException("Pet requires valid gender");
+            }
+        }
+        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
+        // check that the weight value is valid.
+        if (values.containsKey(PetContract.PetEntry.COLUMN_PET_WEIGHT)) {
+            Integer weight = values.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
+            // if the weight is provided, check that it's greater than or equal to 0kg
+            if (weight != null && weight < 0) {
+                throw new IllegalArgumentException("Pet requires valid weight");
+            }
+        }
+        // if there are no value to update, don't try to update the db
+        if (values.size() == 0) {
+            return 0;
+        }
+
+        // get writable database
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        // update the new pet with the given values
+        return db.update(PetContract.PetEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 
     /**
