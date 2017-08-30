@@ -245,10 +245,20 @@ public class PetProvider extends ContentProvider {
     }
 
     /**
-     * Returns the MIME type of data for the content URI.
+     * Returns the MIME (content) type of data for the content URI. we have 2 types of URIs in pets
+     * app, the "content://com.example.android.pets/pets/" refers to the entire pats table, the
+     * "content://com.example.android.pets/pets/#" refers to a single pet (a single row of data)
      */
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int match = sUriMatcher.match(uri);
+        switch (match) {
+            case PETS:
+                return PetContract.PetEntry.CONTENT_LIST_TYPE;
+            case PET_ID:
+                return PetContract.PetEntry.CONTENT_ITEM_TYPE;
+            default:
+                throw new IllegalStateException("Unknown URI " + uri + " with match " + match);
+        }
     }
 }
