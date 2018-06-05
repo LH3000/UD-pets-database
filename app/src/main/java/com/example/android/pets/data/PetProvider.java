@@ -44,7 +44,7 @@ public class PetProvider extends ContentProvider {
 
         // the content URI of the form "content://com.example.android.pets/pets/#" will map to the
         // integer code {@link #PETS_ID}. This URI is used to provide access to ONE single row
-        // of the pets table.
+        // of the pets table. '#' means any integer, '*' means any string
         sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PET_ID);
     }
 
@@ -125,11 +125,7 @@ public class PetProvider extends ContentProvider {
         if (name == null) {
             throw new IllegalArgumentException("Pet requires a name");
         }
-        // check that gender is not null
-        Integer gender = contentValues.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
-        if (gender == null || !PetContract.PetEntry.isValidGender(gender)) {
-            throw new IllegalArgumentException("Pet requires valid gender");
-        }
+
         // if the weight is provided, check that it's greater than or equal to 0kg
         Integer weight = contentValues.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
         if (weight != null && weight < 0) {
@@ -193,14 +189,6 @@ public class PetProvider extends ContentProvider {
             }
         }
 
-        // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
-        // check that the gender value is valid.
-        if (values.containsKey(PetContract.PetEntry.COLUMN_PET_GENDER)) {
-            Integer gender = values.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
-            if (gender == null || !PetContract.PetEntry.isValidGender(gender)) {
-                throw new IllegalArgumentException("Pet requires valid gender");
-            }
-        }
         // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
         // check that the weight value is valid.
         if (values.containsKey(PetContract.PetEntry.COLUMN_PET_WEIGHT)) {

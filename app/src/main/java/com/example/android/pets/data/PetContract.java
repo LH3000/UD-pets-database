@@ -32,7 +32,10 @@ public class PetContract {
     private PetContract() {
     }
 
-    // set the db schema here
+    /**
+     * Inner class that defines constant values for the pets database table.
+     * Each entry in the table represents a single pet.
+     */
     public static final class PetEntry implements BaseColumns {
         /**
          * The content URI to access the pet data in the provider
@@ -59,14 +62,6 @@ public class PetContract {
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_PETS;
-
-        /**
-         * Returns whether or not the given gender is {@link #GENDER_FEMALE}, {@link #GENDER_MALE},
-         * or {@link #GENDER_UNKNOWN}
-         */
-        public static boolean isValidGender(int gender) {
-            return (gender == GENDER_FEMALE || gender == GENDER_MALE || gender == GENDER_UNKNOWN);
-        }
 
     }
 }
