@@ -48,6 +48,12 @@ public class CatalogActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        ListView petListView = (ListView) findViewById(R.id.list_view_pet);
+
+        // call setEmptyView() on the petListView to set app background before any data in the db
+        View emptyView = findViewById(R.id.empty_view);
+        petListView.setEmptyView(emptyView);
     }
 
     /**
