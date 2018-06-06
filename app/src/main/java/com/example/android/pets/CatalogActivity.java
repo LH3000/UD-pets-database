@@ -16,6 +16,7 @@
 package com.example.android.pets;
 
 import android.app.LoaderManager;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -28,6 +29,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.android.pets.data.PetContract;
@@ -69,6 +71,23 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
         // prepare the loader
         getLoaderManager().initLoader(PET_LOADER, null, this);
+
+        // setup item click listener
+        petListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // create new intent to go to {@link EditorActivity}
+                Intent editorIntent = new Intent(CatalogActivity.this, EditorActivity.class);
+                // Form the content uri that represents the specific pet that was clicked on,
+                // by appending the "id" (passed as input to this method) onto the
+                // {@link PetEntry#Content_uri}
+                Uri currentPetUri = ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI, id);
+                // set the URI on the data field of the intent
+                editorIntent.setData(currentPetUri);
+                // Launch the {@link EditorActivity} to display the data for the current pet.
+                startActivity(editorIntent);
+            }
+        });
     }
 
     @Override
