@@ -97,6 +97,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         if (mCurrentPetUri == null) {
             // this is a new pet, so change the app bar to show "add a pet"
             setTitle(R.string.editor_activity_title_new_pet);
+
+            // ...and invalidate the options menu, so the delete menu option can be hidden
+            invalidateOptionsMenu();
         } else {
             // otherwise this is an existing pet, so change app bar to say "edit pet"
             setTitle(R.string.editor_activity_title_edit_pet);
@@ -226,6 +229,17 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // if this is a new pet, hide the delete menu item
+        if (mCurrentPetUri == null) {
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            menuItem.setVisible(false);
+        }
         return true;
     }
 
